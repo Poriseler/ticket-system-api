@@ -7,6 +7,7 @@ from ticket import views
 
 router = DefaultRouter()
 router.register('tickets', views.TicketViewSet)
+router.register('comments', views.CommentViewSet)
 
 app_name = 'ticket'
 

@@ -4,7 +4,8 @@ Tests for models.
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from core.models import Ticket
+from core.models import Ticket, Comment
+
 
 class ModelTests(TestCase):
     """Tests for models."""
@@ -55,13 +56,26 @@ class ModelTests(TestCase):
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user('', 'pass123')
 
-
     def test_ticket_create(self):
         """Tests if ticket creation is successful."""
 
         user = get_user_model().objects.create_user('user@example.com', 'pass123')
         user2 = get_user_model().objects.create_user('user2@example.com', 'pass123')
-        ticket = Ticket.objects.create(created_by=user, assigned_to=user2, title='Test title', description='Test description', status='OPEN')
+        ticket = Ticket.objects.create(created_by=user, assigned_to=user2,
+                                       title='Test title', description='Test description', status='OPEN')
 
         self.assertEqual(str(ticket), ticket.title)
 
+    def test_comment_create(self):
+        """Tests if comment creation is successful."""
+
+        user = get_user_model().objects.create_user('user@example.com', 'pass123')
+        user2 = get_user_model().objects.create_user('user2@example.com', 'pass123')
+        ticket = Ticket.objects.create(created_by=user, assigned_to=user2,
+                                       title='Test title', description='Test description', status='OPEN')
+
+        comment = Comment.objects.create(
+            ticket=ticket, author=user, text='Example comment text')
+
+        self.assertEqual(
+            str(comment), f'{comment.ticket.id}_{comment.text[:20]}')

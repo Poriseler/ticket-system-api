@@ -8,6 +8,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 # Register your models here.
 
+
 class UserAdmin(BaseUserAdmin):
     """Defines admin page for users."""
     ordering = ['id']
@@ -40,7 +41,9 @@ class UserAdmin(BaseUserAdmin):
             )
         }),
     )
-    list_filter = ['is_active','is_staff', 'is_superuser']
+    list_filter = ['is_active', 'is_staff', 'is_superuser']
+
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Ticket)
+admin.site.register(models.Comment)

@@ -6,7 +6,6 @@ from django.db import models
 from django.utils import timezone
 
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
-from ticket_system_api import settings
 
 
 class UserManager(BaseUserManager):
@@ -77,7 +76,8 @@ class Ticket(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey('User', on_delete=models.SET_NULL, null=True)
-    ticket = models.ForeignKey('Ticket', on_delete=models.CASCADE)
+    ticket = models.ForeignKey(
+        'Ticket', related_name='comments', on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
     text = models.TextField()

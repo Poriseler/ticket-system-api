@@ -16,6 +16,8 @@
 # Mono auto generated files
 mono_crash.*
 
+**/__pycache__
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -301,7 +303,7 @@ node_modules/
 *.dsw
 *.dsp
 
-# Visual Studio 6 technical files 
+# Visual Studio 6 technical files
 *.ncb
 *.aps
 

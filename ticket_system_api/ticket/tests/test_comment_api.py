@@ -51,13 +51,13 @@ class PublicCommentApiTests(TestCase):
 
     def test_listing_all_comments(self):
         """Tests if listing all comments is successful."""
+
         comment = create_comment(self.user, self.ticket)
-
         serializer = CommentSerializer(comment)
-
         res = self.client.get(COMMENT_URL)
-        self.assertIn(serializer.data, res.data)
-        self.assertEqual(len(res.data), 1)
+
+        self.assertIn(serializer.data, res.data.get('results'))
+        self.assertEqual(len(res.data.get('results')), 1)
 
     def test_create_comment_not_allowed(self):
         """Tests if creating comments is not allowed for unauthenticated users."""
@@ -68,6 +68,7 @@ class PublicCommentApiTests(TestCase):
             'text': 'Example comment text.'
         }
         res = self.client.post(COMMENT_URL, payload)
+
         self.assertEqual(res.status_code, 401)
 
     def test_delete_comment_not_allowed(self):
@@ -80,6 +81,7 @@ class PublicCommentApiTests(TestCase):
 
     def test_edit_comment_not_allowed(self):
         """Tests if editing comments is not allowed for unauthenticated users."""
+
         comment = create_comment(self.user, self.ticket)
         payload = {
             'text': 'Changed example text.'
@@ -102,11 +104,11 @@ class PrivateCommmentApiTests(TestCase):
 
     def test_creating_comment_successful(self):
         """Tests if creating a comment is successful."""
+
         payload = {
             'ticket': self.ticket.id,
             'text': 'Example comment text.'
         }
-
         res = self.client.post(COMMENT_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -115,40 +117,41 @@ class PrivateCommmentApiTests(TestCase):
 
     def test_updating_comment_success(self):
         """Tests if user can successfully update a comment."""
-        comment = create_comment(self.user, self.ticket)
 
+        comment = create_comment(self.user, self.ticket)
         payload = {
             'text': 'Changed comment text.'
         }
-
         res = self.client.patch(detail_url(comment.id), payload)
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         comment.refresh_from_db()
         self.assertEqual(comment.text, payload['text'])
 
     def test_deleting_comment_success(self):
         """Tests if user can succesfully delete a comment."""
-        comment = create_comment(self.user, self.ticket)
 
+        comment = create_comment(self.user, self.ticket)
         res = self.client.delete(detail_url(comment.id))
+
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         comments = Comment.objects.all()
-
         self.assertEqual(comments.count(), 0)
 
     def test_updating_different_user_comment_error(self):
         """Tests if updating different user comment is forbidden."""
-        comment = create_comment(self.user2, self.ticket)
 
+        comment = create_comment(self.user2, self.ticket)
         payload = {
             'text': 'Comment text changed.'
         }
         res = self.client.patch(detail_url(comment.id), payload)
+
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_deleting_different_user_comment_error(self):
         """Tests if deleting different user comment is forbidden."""
         comment = create_comment(self.user2, self.ticket)
-
         res = self.client.delete(detail_url(comment.id))
+
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)

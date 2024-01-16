@@ -10,4 +10,9 @@ class IsOwnerOrAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        return (getattr(obj, 'author', None) == request.user or getattr(obj, 'created_by', None) == request.user) or request.user.is_superuser
+        return ((getattr(obj, 'author', None) == request.user) or (getattr(obj, 'created_by', None) == request.user)) or (request.user.is_superuser)
+
+
+class IsAdminOrForbidden(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_superuser

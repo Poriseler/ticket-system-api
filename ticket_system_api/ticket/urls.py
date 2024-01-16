@@ -12,5 +12,8 @@ router.register('comments', views.CommentViewSet)
 app_name = 'ticket'
 
 urlpatterns = [
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('metrics/', views.MetricView.as_view(), name='metrics'),
+    path('employees/', views.EmployeesView.as_view(), name='employees')
+
 ]

@@ -24,7 +24,8 @@ class UserAdmin(BaseUserAdmin):
                     'is_superuser',
                 )
             }
-        )
+        ),
+        (None, {'fields': ('name', 'surname')})
     )
     add_fieldsets = (
         (None, {

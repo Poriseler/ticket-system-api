@@ -82,5 +82,8 @@ class Comment(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     text = models.TextField()
 
+    class Meta:
+        ordering = ['-created_date']
+
     def __str__(self) -> str:
         return f'{self.ticket.id}_{self.text[:20]}'

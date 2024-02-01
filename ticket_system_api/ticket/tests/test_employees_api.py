@@ -49,6 +49,8 @@ class PrivateUserApiTests(TestCase):
 
         user2 = create_user(email='user2@example.com')
         res = self.client.get(EMPLOYEES_URL)
+        all_users = get_user_model().objects.filter(
+            is_staff=True).exclude(id=self.user.id)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
+        self.assertEqual(len(res.data), len(all_users))
